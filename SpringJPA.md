@@ -46,8 +46,29 @@ spring.jpa.show-sql=true /*Mostrar en consola como se traduce el codigo a sql */
 @Entity + @Table : Le indica a la clase que se comportara como una entidad y sera traducida a una tabla.
 
 ```
+@Entity
+@Table(name = "Pizza")
+@Getter
+@Setter
+@NoArgsConstructor
+public class PizzaEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_pizza",nullable = false)
+    private Integer idPizza;
+}
+```
+### **Relaciones**
+
+- **`@OneToOne`** : Para establercer relaciones 1 a 1.
+Parametros para garantizar el principio de responsabilidad unica.(para que no se inserten o actulizen )
+```
+@OneToOne
+@JoinColumn(name = "id_pizza", referencedColumnName = "id_pizza", insertable = false,updatable = false)
+private PizzaEntity pizza;
 
 ```
+
 
 
 
