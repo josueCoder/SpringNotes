@@ -59,15 +59,76 @@ public class PizzaEntity {
 }
 ```
 ### **Relaciones**
-
+![](./img/DiagramExample.png)
 - **`@OneToOne`** : Para establercer relaciones 1 a 1.
 Parametros para garantizar el principio de responsabilidad unica.(para que no se inserten o actulizen )
+
+    - private PizzaEntity pizza -> Atributo que hace referencia a la clase  a relacionarse
+    - @OneToOne -> Indicar la relación 1 a 1.
+    - @JoinColumn -> A traves de que columna se establece la relación.
+
+- **`ManyToOne`**: Para relaciones muchos a 1.
 ```
-@OneToOne
-@JoinColumn(name = "id_pizza", referencedColumnName = "id_pizza", insertable = false,updatable = false)
-private PizzaEntity pizza;
+/*==========PizzaOrderEntity -> PizzaEntity==============*/
+public class OrderItemEntity {
+
+    @Id
+    @Column(name = "id_item",nullable = false)
+    private Integer idItem;
+
+    @Id
+    @Column(name = "id_order", nullable = false)
+    private Integer idOrder;
+
+    @Column(name ="id_pizza", nullable = false)
+    private Integer idPizza;
+
+    @Column(columnDefinition = "DECIMAL(5,2)", nullable = false)
+    private Double price;
+
+    @OneToOne
+    @JoinColumn(name = "id_pizza", referencedColumnName = "id_pizza", insertable = false,updatable = false)
+    private PizzaEntity pizza; /*Instanciando con el entity a relacionarse*/
+
+    @ManyToOne
+    @JoinColumn(name = "id_order",referencedColumnName = "id_order", insertable = false, updatable = false)
+    private OrderEntity order;
+
+}
 
 ```
+
+Especificando la relacion entre **`OrderItemEntity`** y **`OrderEntity`**
+
+- private List<OrderItemEntity> items;
+
+- @OneToMany -> Un `OrderEntity` puede contener muchos `OrderItemEntity`
+- mappedBy -> mapeada con el atributo `order` de OrderItemEntity
+
+```
+
+public class OrderEntity {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Column(name = "id_order")
+    private Integer idOrder;
+    .
+    .
+    .
+    @Column(nullable = false,columnDefinition = "DECIMAL(6,2)")
+    private Double total;
+
+    /*Relaciones*/
+    @OneToMany(mappedBy = "order")
+    private List<OrderItemEntity> items;
+
+    @OneToOne
+    @JoinColumn(name = "id_customer", referencedColumnName = "id_customer", insertable = false, updatable = false)
+    private CustomerEntity customerEntity;
+}
+
+```
+![](./img/RelacionesEntities.png)
 
 
 
